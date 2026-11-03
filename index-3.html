@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#172554"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Lens Lab">
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg" type="image/svg+xml">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https: wss:; manifest-src 'self'; base-uri 'self'; form-action 'self'">
+<title>INTERACTIVE LENS LAB | ห้องทดลองมหัศจรรย์ เรื่องเลนส์</title>
+<style>
+:root{--navy:#172554;--blue:#2563eb;--cyan:#06b6d4;--violet:#8b5cf6;--ink:#1e293b;--muted:#64748b;--bg:#f3f7ff;--line:#dbeafe;--white:#fff}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
+.hidden{display:none!important}
+header{background:linear-gradient(115deg,#172554,#2563eb 60%,#8b5cf6);color:white;padding:22px clamp(16px,4vw,48px);display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:13px}.logo{width:48px;height:48px;border-radius:15px;background:#ffffff22;display:grid;place-items:center;font-size:27px}
+h1{font-size:clamp(19px,3vw,27px);margin:0}.subtitle{opacity:.85;font-size:13px}.userbar{display:flex;align-items:center;gap:10px;font-size:14px;flex-wrap:wrap}
+.modebadge{font-size:11px;font-weight:800;padding:3px 9px;border-radius:99px;background:#ffffff33}
+button,select,input,textarea{font:inherit}button{border:0;border-radius:11px;padding:10px 14px;background:var(--blue);color:white;cursor:pointer;font-weight:650}button:hover{filter:brightness(.96)}button:disabled{opacity:.6;cursor:wait}button.secondary{background:#eaf1ff;color:#1d4ed8}button.ghost{background:#ffffff22;color:white;border:1px solid #ffffff55}button.small{padding:7px 10px;font-size:13px}
+.layout{display:grid;grid-template-columns:245px minmax(0,1fr);gap:22px;max-width:1500px;margin:22px auto;padding:0 20px}
+nav{background:white;border:1px solid var(--line);border-radius:18px;padding:14px;height:max-content;position:sticky;top:16px}
+.navlabel{font-size:11px;color:#94a3b8;font-weight:800;letter-spacing:.1em;padding:10px 10px 5px}
+.navbtn{width:100%;display:flex;gap:11px;align-items:center;text-align:left;background:transparent;color:#334155;padding:12px;border-radius:11px;font-weight:600}
+.navbtn.active,.navbtn:hover{background:#edf4ff;color:#1d4ed8}.navbtn span:first-child{font-size:19px;width:23px}
+main{min-width:0}.page{display:none}.page.active{display:block}
+.hero{background:linear-gradient(120deg,#dbeafe,#ede9fe);border-radius:20px;padding:25px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;gap:15px}
+.hero h2{margin:0 0 7px;font-size:clamp(22px,3vw,30px);color:#172554}.hero p{margin:0;color:#475569;max-width:720px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.card{background:white;border:1px solid var(--line);border-radius:17px;padding:18px;box-shadow:0 4px 15px #1e40af08}
+.stat{font-size:29px;font-weight:800;color:#1d4ed8}.muted{color:var(--muted);font-size:13px}.card h3{margin:0 0 8px;font-size:17px}.sectionhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:20px 0 12px;flex-wrap:wrap}
+.labgrid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(270px,.8fr);gap:16px}.stage{background:#fff;border:1px solid var(--line);border-radius:18px;padding:12px;min-width:0}
+#raySvg{width:100%;height:auto;display:block;touch-action:pan-y;background:linear-gradient(#fbfdff,#f5f8ff);border-radius:12px}
+.controls{display:grid;gap:13px}.control{background:white;border:1px solid var(--line);border-radius:15px;padding:15px}.control label{display:flex;justify-content:space-between;font-weight:700;font-size:14px;margin-bottom:9px}
+input[type=range]{width:100%;accent-color:#2563eb}select{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:10px;background:white}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap}.readout{display:grid;grid-template-columns:1fr 1fr;gap:9px}.readout div{background:#f1f5ff;padding:10px;border-radius:10px}.readout b{display:block;color:#1d4ed8;font-size:18px}
+.notice{background:#f5f3ff;color:#5b21b6;padding:12px;border-radius:11px;font-size:13px;line-height:1.6}
+.notice.warn{background:#fff7ed;color:#9a3412}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:10px;border-bottom:1px solid #e2e8f0;text-align:left}th{background:#f1f5ff;color:#334155}
+.lesson{line-height:1.8}.lesson h3{color:#1d4ed8}.lesson li{margin:5px 0}
+input[type=text],input[type=password],input[type=email],textarea{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:10px}
+.quizq{padding:15px;border:1px solid var(--line);border-radius:13px;margin:12px 0}.quizq label{display:block;padding:6px}
+footer{text-align:center;color:#94a3b8;padding:25px;font-size:12px}
+#login,#pw{position:fixed;inset:0;background:#172554f2;z-index:5;display:none;place-items:center;padding:20px}
+.loginbox{max-width:430px;width:100%;background:white;border-radius:20px;padding:25px}.loginbox h2{margin-top:0}.loginbox label{display:block;margin:12px 0 5px;font-weight:650;font-size:14px}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#172554;color:white;padding:12px 18px;border-radius:12px;font-size:14px;z-index:9;display:none;max-width:90vw;box-shadow:0 8px 24px #0004}
+#toast.err{background:#b91c1c}
+.scroll{overflow:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav{position:static;display:grid;grid-template-columns:repeat(2,1fr)}.navlabel{grid-column:1/-1}.labgrid{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){header{padding:16px}.layout{padding:0 12px;margin:13px auto}nav{grid-template-columns:1fr 1fr;padding:8px}.navbtn{font-size:12px;padding:9px 7px}.grid{grid-template-columns:1fr 1fr}.hero{padding:18px}.hero .heroicon{display:none}.readout{grid-template-columns:1fr 1fr}}
+input,select,textarea{font-size:16px}
+button{min-height:40px;-webkit-tap-highlight-color:transparent}button.small{min-height:36px}
+.lbls{display:none}.loginbox{max-height:92vh;overflow:auto}
+@media(max-width:900px){
+ body{padding-bottom:calc(78px + env(safe-area-inset-bottom))}
+ header{padding:14px 16px;padding-top:calc(14px + env(safe-area-inset-top))}
+ nav{position:fixed;left:0;right:0;bottom:0;top:auto;z-index:4;display:flex!important;gap:2px;border-radius:16px 16px 0 0;border:0;border-top:1px solid var(--line);padding:6px 6px calc(6px + env(safe-area-inset-bottom));box-shadow:0 -4px 18px #1e3a8a1f}
+ .navlabel{display:none}
+ .navbtn{flex:1;flex-direction:column;gap:2px;padding:7px 2px;font-size:10.5px;text-align:center;justify-content:center;min-height:54px;min-width:0}
+ .navbtn span:first-child{width:auto;font-size:21px}
+ .lbl{display:none}.lbls{display:inline}
+ .layout{margin-top:14px}.quizq label{padding:11px 6px}
+ #toast{bottom:calc(92px + env(safe-area-inset-bottom))}
+ .hero{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+<header>
+ <div class="brand"><div class="logo">🔬</div><div><h1>INTERACTIVE LENS LAB</h1><div class="subtitle">ห้องทดลองมหัศจรรย์ เรื่องเลนส์</div></div></div>
+ <div class="userbar"><span id="userLabel"></span><button class="ghost small hidden" id="pwBtn">เปลี่ยนรหัสผ่าน</button><button class="ghost small" id="userBtn"></button></div>
+</header>
+<div class="layout">
+<nav>
+ <div class="navlabel">LEARNING SPACE</div>
+ <button class="navbtn active" data-page="home" data-for="student"><span>🏠</span><span class="lbl"> ภาพรวมการเรียนรู้</span><span class="lbls">หน้าหลัก</span></button>
+ <button class="navbtn" data-page="lessons"><span>📘</span><span class="lbl"> บทเรียนเรื่องเลนส์</span><span class="lbls">บทเรียน</span></button>
+ <button class="navbtn" data-page="lab"><span>🔭</span><span class="lbl"> ห้องทดลองและบันทึกผล</span><span class="lbls">ห้องทดลอง</span></button>
+  <button class="navbtn" data-page="quiz" data-for="student"><span>🧠</span><span class="lbl"> แบบทดสอบ</span><span class="lbls">ทดสอบ</span></button>
+ <button class="navbtn" data-page="progress" data-for="student"><span>📈</span><span class="lbl"> ผลการเรียนรู้ของฉัน</span><span class="lbls">ผลของฉัน</span></button>
+ <div class="navlabel" data-for="teacher">TEACHER SPACE</div>
+ <button class="navbtn" data-page="teacher" data-for="teacher"><span>👩‍🏫</span><span class="lbl"> Teacher Dashboard</span><span class="lbls">ครู</span></button>
+</nav>
+<main>
+<section id="home" class="page active">
+  <div class="hero"><div><h2>ยินดีต้อนรับสู่ห้องทดลองเลนส์ ✨</h2><p>เรียนรู้การหักเหของแสง ทดลองปรับระยะวัตถุ และค้นพบว่าภาพเปลี่ยนแปลงอย่างไรด้วยตนเอง</p><div style="margin-top:16px"><button onclick="showPage('lab')">เริ่มทดลองเลย →</button></div></div><div class="heroicon" style="font-size:70px">🔬</div></div>
+ <div class="grid">
+  <div class="card"><div class="muted">ความก้าวหน้าการเรียน</div><div class="stat" id="homeProgress">0%</div><div class="muted">จากบทเรียน กิจกรรม และแบบทดสอบ</div></div>
+  <div class="card"><div class="muted">จำนวนครั้งที่ทดลอง</div><div class="stat" id="homeTrials">0</div><div class="muted" id="trialsWhere">บันทึกในอุปกรณ์นี้</div></div>
+  <div class="card"><div class="muted">คะแนนแบบทดสอบล่าสุด</div><div class="stat" id="homeScore">—</div><div class="muted">คะแนนเต็ม 10</div></div>
+ </div>
+ <div class="sectionhead"><h2>เลือกพื้นที่การเรียนรู้</h2></div>
+ <div class="grid">
+  <div class="card"><h3>🔎 บทเรียนเรื่องเลนส์</h3><p class="muted">ทำความเข้าใจเลนส์นูน เลนส์เว้า และการเกิดภาพ</p><button class="secondary" onclick="showPage('lessons')">เข้าสู่บทเรียน</button></div>
+  <div class="card"><h3>🔭 ห้องทดลองเสมือน</h3><p class="muted">ลากวัตถุ ปรับโฟกัส และสังเกตแนวรังสี</p><button class="secondary" onclick="showPage('lab')">เปิดห้องทดลอง</button></div>
+  <div class="card"><h3>📝 ใบกิจกรรม</h3><p class="muted">บันทึกผลการทดลองและอธิบายสิ่งที่ค้นพบ</p><button class="secondary" onclick="showPage('lab')">ทำกิจกรรม</button></div>
+ </div>
+</section>
+<section id="lessons" class="page">
+ <div class="sectionhead"><h2>📘 บทเรียนเรื่องเลนส์</h2><span class="muted">วิทยาศาสตร์ระดับมัธยมศึกษาตอนต้น</span></div>
+ <div class="card lesson">
+ <h3>บทที่ 1 เลนส์นูน (Convex Lens)</h3>
+ <p>เลนส์นูนมีลักษณะตรงกลางหนากว่าขอบ ทำให้ลำแสงขนานที่ผ่านเลนส์หักเหไปรวมกันที่จุดโฟกัสด้านตรงข้ามกับแสงตกกระทบ</p>
+ <ul><li>มีจุดโฟกัสหลัก 2 จุด คือ F₁ และ F₂</li><li>เมื่อวัตถุอยู่นอกจุดโฟกัส จะเกิดภาพจริงหัวกลับ</li><li>เมื่อวัตถุอยู่ระหว่างเลนส์กับจุดโฟกัส จะเกิดภาพเสมือนหัวตั้งและขยาย</li></ul>
+ <h3>กรณีการเกิดภาพจากเลนส์นูน</h3>
+ <table><tr><th>ตำแหน่งวัตถุ</th><th>ลักษณะภาพ</th></tr><tr><td>ไกลกว่า 2F</td><td>ภาพจริง หัวกลับ ขนาดเล็ก</td></tr><tr><td>ที่ 2F</td><td>ภาพจริง หัวกลับ ขนาดเท่าวัตถุ</td></tr><tr><td>ระหว่าง F กับ 2F</td><td>ภาพจริง หัวกลับ ขนาดใหญ่</td></tr><tr><td>ที่ F</td><td>ภาพอยู่ที่ระยะอนันต์ (รังสีขนาน)</td></tr><tr><td>ใกล้กว่า F</td><td>ภาพเสมือน หัวตั้ง ขนาดใหญ่</td></tr></table>
+ <h3>บทที่ 2 เลนส์เว้า (Concave Lens)</h3>
+ <p>เลนส์เว้ามีลักษณะตรงกลางบางกว่าขอบ ทำให้ลำแสงขนานหักเหแยกออก เสมือนว่ารังสีเดินทางมาจากจุดโฟกัสด้านเดียวกับวัตถุ</p>
+ <ul><li>เลนส์เว้าให้ภาพเสมือนเสมอ</li><li>ภาพหัวตั้งและมีขนาดเล็กกว่าวัตถุ</li><li>พบการประยุกต์ใช้ในแว่นสายตาสั้นและอุปกรณ์ทางแสงบางชนิด</li></ul>
+ <button class="student-only" onclick="markLesson()">ทำเครื่องหมายว่าเรียนจบบทเรียน</button>
+ </div>
+</section>
+<section id="lab" class="page">
+ <div class="sectionhead"><h2>🔭 Interactive Virtual Lens Lab</h2><span class="muted">ปรับค่าแล้วสังเกตผลแบบ Real-time</span></div>
+ <div class="labgrid">
+  <div class="stage">
+   <svg id="raySvg" viewBox="0 0 900 480" aria-label="แผนภาพการเกิดภาพจากเลนส์"></svg>
+   <div class="muted" style="padding:9px 5px">ลากลูกศรวัตถุสีส้มบนแผนภาพเพื่อปรับระยะวัตถุได้ หรือใช้แถบเลื่อนด้านข้าง</div>
+  </div>
+  <div class="controls">
+   <div class="control"><label>ชนิดของเลนส์</label><select id="lensType"><option value="convex">เลนส์นูน (f เป็นบวก)</option><option value="concave">เลนส์เว้า (f เป็นลบ)</option></select></div>
+   <div class="control"><label>ระยะวัตถุ (dₒ) <b id="doVal">60 cm</b></label><input id="doRange" type="range" min="10" max="150" value="60" step="1"><div class="btnrow"><button class="secondary small" onclick="bump(-5)">− ลดระยะ 5 cm</button><button class="secondary small" onclick="bump(5)">+ เพิ่มระยะ 5 cm</button></div></div>
+   <div class="control"><label>ความยาวโฟกัส |f| <b id="fVal">20 cm</b></label><input id="fRange" type="range" min="5" max="50" value="20" step="1"></div>
+   <div class="control"><div class="btnrow"><button id="raysBtn" class="secondary small">ซ่อนแนวรังสี</button><button id="focusBtn" class="secondary small">ซ่อนจุดโฟกัส</button><button class="small" onclick="resetLab()">เริ่มใหม่</button></div></div>
+   <div class="control"><h3 style="margin:0 0 10px">ผลการคำนวณ</h3><div class="readout">
+    <div><span class="muted">ระยะวัตถุ dₒ</span><b id="outDo">60 cm</b></div><div><span class="muted">ระยะภาพ dᵢ</span><b id="outDi">30 cm</b></div>
+    <div><span class="muted">โฟกัส f</span><b id="outF">+20 cm</b></div><div><span class="muted">กำลังขยาย m</span><b id="outM">−0.50</b></div>
+   </div><p id="imageNature" class="notice" style="margin:12px 0 0">ภาพจริง หัวกลับ ขนาดเล็กกว่าวัตถุ</p>
+   <button class="student-only" style="margin-top:12px;width:100%" onclick="saveTrial()">💾 บันทึกค่าการทดลองนี้</button></div>
+  </div>
+ </div>
+ <div class="student-only" style="margin-top:16px">
+  <div class="card">
+   <h3>📝 บันทึกผลการทดลองและใบกิจกรรม</h3>
+   <p class="muted">ปรับเลนส์ด้านบนแล้วกด "บันทึกค่าการทดลองนี้" จากนั้นเขียนข้อสังเกตและคำอธิบายของตนเองที่นี่ได้เลย</p>
+   <label>ข้อสังเกตจากการทดลอง</label><textarea id="observation" rows="3" maxlength="2000" placeholder="เช่น เมื่อเลื่อนวัตถุเข้าใกล้จุดโฟกัส ภาพมีขนาด..."></textarea>
+   <label style="display:block;margin-top:12px">อธิบายลักษณะภาพที่เกิดขึ้น</label><textarea id="explanation" rows="3" maxlength="2000" placeholder="ระบุประเภทภาพ ทิศทาง และขนาดภาพ พร้อมเหตุผล"></textarea>
+   <div class="btnrow" style="margin-top:12px;align-items:center"><button onclick="saveTrial()">💾 บันทึกค่าการทดลองนี้</button><button class="secondary" id="actBtn" onclick="submitActivity()">ส่งใบกิจกรรม</button><span id="activityMsg" class="muted"></span></div>
+  </div>
+  <div class="sectionhead"><h3>ประวัติการทดลองของฉัน</h3></div>
+  <div class="card scroll"><table id="trialTable"><thead><tr><th>ครั้งที่</th><th>ชนิดเลนส์</th><th>dₒ</th><th>f</th><th>dᵢ</th><th>m</th><th>ลักษณะภาพ</th></tr></thead><tbody></tbody></table></div>
+ </div>
+</section>
+<section id="quiz" class="page">
+ <div class="sectionhead"><h2>🧠 แบบทดสอบทบทวนความรู้</h2><span class="muted">10 ข้อ · 10 คะแนน</span></div>
+ <form id="quizForm" class="card">
+ <div id="phaseBox" class="hidden" style="margin-bottom:10px"><label style="font-weight:700;font-size:14px">ประเภทการทำแบบทดสอบ</label><select id="quizPhase"><option value="practice">ฝึกฝน</option><option value="pre">ก่อนเรียน</option><option value="post">หลังเรียน</option></select></div>
+ <div id="questions"></div><button type="submit" id="quizBtn">ส่งคำตอบและตรวจคะแนน</button><span id="quizResult" style="margin-left:12px;font-weight:800"></span>
+ </form>
+</section>
+<section id="progress" class="page">
+ <div class="sectionhead"><h2>📈 ผลการเรียนรู้ของฉัน</h2></div>
+ <div class="grid"><div class="card"><div class="muted">บทเรียน</div><div class="stat" id="pLesson">ยังไม่เรียน</div></div><div class="card"><div class="muted">การทดลองที่บันทึก</div><div class="stat" id="pTrials">0</div></div><div class="card"><div class="muted">คะแนนล่าสุด</div><div class="stat" id="pScore">—</div></div></div>
+ <div class="card" style="margin-top:15px"><h3>ข้อมูลการเรียนรู้</h3><p class="muted" id="progressNote"></p><button class="secondary" onclick="exportMine()">ดาวน์โหลดประวัติการทดลอง CSV</button></div>
+</section>
+<section id="teacher" class="page">
+ <div class="sectionhead"><h2>👩‍🏫 Teacher Dashboard</h2><span class="muted" id="teacherMode"></span></div>
+  <div id="classFilterBox" class="control hidden" style="margin-bottom:14px"><label>เลือกห้องเรียน</label><select id="classFilter"></select></div>
+ <div class="grid" style="margin-top:14px"><div class="card"><div class="muted" id="tUsersLbl">นักเรียน</div><div class="stat" id="tUsers">1</div></div><div class="card"><div class="muted">จำนวนครั้งที่ทดลอง</div><div class="stat" id="tTrials">0</div></div><div class="card"><div class="muted" id="tScoreLbl">คะแนนล่าสุด</div><div class="stat" id="tScore">—</div></div></div>
+ <div id="rosterCard" class="card hidden" style="margin-top:15px"><h3>สรุปรายนักเรียน</h3><div class="scroll"><table id="rosterTable"><thead><tr><th>รหัส</th><th>ชื่อ-สกุล</th><th>ห้อง</th><th>ทดลอง (ครั้ง)</th><th>ก่อนเรียน</th><th>หลังเรียน</th><th>ฝึกฝนล่าสุด</th></tr></thead><tbody></tbody></table></div></div>
+ <div class="card" style="margin-top:15px"><div class="sectionhead" style="margin-top:0"><h3 style="margin:0">บันทึกการทดลอง</h3><button class="secondary small" onclick="exportTeacher()">ดาวน์โหลด CSV</button></div><div class="scroll"><table id="teacherTable"><thead><tr><th>นักเรียน</th><th>ชนิดเลนส์</th><th>dₒ</th><th>f</th><th>dᵢ</th><th>m</th><th>เวลา</th></tr></thead><tbody></tbody></table></div></div>
+</section>
+</main>
+</div>
+<footer>INTERACTIVE LENS LAB · สื่อการเรียนรู้วิทยาศาสตร์ เรื่องเลนส์เว้าและเลนส์นูน</footer>
+
+<div id="login"><div class="loginbox">
+ <div id="loginOnline" class="hidden">
+  <h2>เข้าสู่ห้องทดลอง</h2><p class="muted">ใช้อีเมลและรหัสผ่านที่ครูหรือผู้ดูแลระบบสร้างไว้ให้</p>
+  <form id="authForm"><label for="email">อีเมล</label><input id="email" type="email" autocomplete="username" required>
+  <label for="password">รหัสผ่าน</label><input id="password" type="password" autocomplete="current-password" required>
+  <p id="authErr" class="notice warn hidden" style="margin:12px 0 0"></p>
+  <div class="btnrow" style="margin-top:16px"><button type="submit" id="authBtn">เข้าสู่ระบบ</button></div></form>
+  <p class="muted">ระบบไม่เปิดให้สมัครสมาชิกเอง หากลืมรหัสผ่านให้ติดต่อครูผู้สอน</p>
+ </div>
+ <div id="loginSetup" class="hidden"><h2>ยังไม่พร้อมใช้งาน</h2><p id="setupMsg" class="notice warn"></p></div>
+</div></div>
+<div id="pw"><div class="loginbox"><h2>เปลี่ยนรหัสผ่าน</h2><form id="pwForm"><label for="pw1">รหัสผ่านใหม่ (อย่างน้อย 8 ตัวอักษร)</label><input id="pw1" type="password" autocomplete="new-password" minlength="8" required>
+<label for="pw2">ยืนยันรหัสผ่านใหม่</label><input id="pw2" type="password" autocomplete="new-password" minlength="8" required>
+<p id="pwErr" class="notice warn hidden" style="margin:12px 0 0"></p>
+<div class="btnrow" style="margin-top:16px"><button type="submit" id="pwSave">บันทึก</button><button type="button" class="secondary" onclick="$('pw').style.display='none'">ยกเลิก</button></div></form></div></div>
+<div id="toast"></div>
+
+<script src="config.js" onerror="void 0"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" onerror="void 0"></script>
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const cfg=window.LENS_LAB_CONFIG||{};
+const ONLINE=!!(window.supabase&&/^https:\/\//.test(cfg.SUPABASE_URL||'')&&!(cfg.SUPABASE_URL||'').includes('ใส่')&&(cfg.SUPABASE_ANON_KEY||'').length>40&&!(cfg.SUPABASE_ANON_KEY||'').includes('ใส่'));
+const sb=ONLINE?window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_ANON_KEY):null;
+const QUIZ_SLUG='lens-basic',LESSON_SLUG='lens-basics',ACT_SLUG='lens-explore';
+let showRays=true,showFocus=true,dragging=false;
+// state: role = 'student' | 'teacher'
+let state={trials:[],score:null,lessonDone:false,activity:null,name:'นักเรียนทดลอง',role:'student'};
+let ST=null; // online: students row
+let T={classrooms:[],students:[],records:[],quizzes:[]}; // teacher data
+const roleTh=r=>r==='teacher'?'ครู':'นักเรียน';
+function toast(msg,err){const t=$('toast');t.textContent=msg;t.className=err?'err':'';t.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>t.style.display='none',3500)}
+function persist(){refresh()}
+function applyRole(){
+ document.querySelectorAll('[data-for]').forEach(e=>e.classList.toggle('hidden',e.dataset.for!==state.role));
+ document.querySelectorAll('.student-only').forEach(e=>e.classList.toggle('hidden',state.role!=='student'));
+}
+function showPage(id){
+ const btn=document.querySelector(`.navbtn[data-page="${id}"]`);
+ if(btn&&btn.classList.contains('hidden'))id=state.role==='teacher'?'teacher':'home';
+ document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
+ document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+ if(id==='lab'){renderLab();renderTrials()}if(id==='teacher')renderTeacher();refresh();window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('.navbtn').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
+function openLogin(){$('login').style.display='grid'}
+function closeLogin(){$('login').style.display='none'}
+function refresh(){
+ $('userLabel').textContent=`${roleTh(state.role)}: ${state.name}`;
+ $('homeTrials').textContent=state.trials.length;$('pTrials').textContent=state.trials.length;
+ const sc=state.score===null?'—':state.score+'/10';$('homeScore').textContent=sc;$('pScore').textContent=sc;
+ $('homeProgress').textContent=(state.lessonDone?40:0)+(state.activity?30:0)+(state.score!==null?30:0)+'%';
+ $('pLesson').textContent=state.lessonDone?'เรียนแล้ว':'ยังไม่เรียน';
+}
+/* ---------- online data ---------- */
+const fromRec=r=>({type:r.lens_type,do_:+r.object_distance,f:+r.focal_length,di:r.image_distance==null?Infinity:+r.image_distance,m:r.magnification==null?Infinity:+r.magnification,kind:r.image_type||'',dir:r.image_orientation||'',size:r.image_size||'',at:new Date(r.created_at).toLocaleString('th-TH')});
+async function loadStudentData(){
+ const id=ST.id;
+ const [rec,qz,pr,ac]=await Promise.all([
+  sb.from('experiment_records').select('*').eq('student_id',id).order('created_at',{ascending:false}).limit(500),
+  sb.from('quiz_results').select('score,max_score,phase,submitted_at').eq('student_id',id).order('submitted_at',{ascending:false}).limit(1),
+  sb.from('learning_progress').select('completed').eq('student_id',id).eq('lesson_slug',LESSON_SLUG).maybeSingle(),
+  sb.from('activity_submissions').select('id').eq('student_id',id).eq('activity_slug',ACT_SLUG).limit(1)
+ ]);
+ const e=[rec,qz,pr,ac].find(r=>r.error);if(e)throw e.error;
+ state.trials=rec.data.map(fromRec).reverse();
+ state.score=qz.data.length?Math.round(qz.data[0].score):null;
+ state.lessonDone=!!(pr.data&&pr.data.completed);
+ state.activity=ac.data.length?{done:true}:null;
+}
+async function loadTeacherData(){
+ const [cl,st,rec,qz]=await Promise.all([
+  sb.from('classrooms').select('id,name,grade').order('name'),
+  sb.from('students').select('id,student_code,full_name,grade,room,student_number,classroom_id').order('student_number',{nullsFirst:false}),
+  sb.from('experiment_records').select('*').order('created_at',{ascending:false}).limit(1000),
+  sb.from('quiz_results').select('student_id,phase,score,max_score,submitted_at').order('submitted_at',{ascending:false}).limit(2000)
+ ]);
+ const e=[cl,st,rec,qz].find(r=>r.error);if(e)throw e.error;
+ T={classrooms:cl.data,students:st.data,records:rec.data,quizzes:qz.data};
+ const sel=$('classFilter');sel.innerHTML='<option value="">ทุกห้องที่ดูแล</option>'+T.classrooms.map(c=>`<option value="${esc(c.id)}">${esc(c.name)} (${esc(c.grade)})</option>`).join('');
+}
+async function enterApp(session){
+ try{
+  const uid=session.user.id;
+  const {data:prof,error}=await sb.from('profiles').select('role,display_name').eq('user_id',uid).maybeSingle();
+  if(error)throw error;
+  if(!prof){await sb.auth.signOut();showAuthErr('บัญชีนี้ยังไม่ได้ผูกกับโปรไฟล์ในระบบ กรุณาติดต่อผู้ดูแลระบบ');return}
+  state.role=prof.role;state.name=prof.display_name;ST=null;
+  if(prof.role==='student'){
+   const {data:s,error:e2}=await sb.from('students').select('id,full_name,student_code').eq('user_id',uid).maybeSingle();
+   if(e2)throw e2;
+   if(!s){await sb.auth.signOut();showAuthErr('ยังไม่พบข้อมูลนักเรียนของบัญชีนี้ กรุณาติดต่อผู้ดูแลระบบ');return}
+   ST=s;await loadStudentData();
+  }else await loadTeacherData();
+  applyRole();closeLogin();$('userBtn').textContent='ออกจากระบบ';$('pwBtn').classList.remove('hidden');refresh();renderTrials();showPage(state.role==='teacher'?'teacher':'home');
+ }catch(err){console.error(err);showAuthErr('โหลดข้อมูลไม่สำเร็จ: '+(err.message||err));}
+}
+function showAuthErr(m){const e=$('authErr');e.textContent=m;e.classList.remove('hidden');$('authBtn').disabled=false;$('authBtn').textContent='เข้าสู่ระบบ';openLogin()}
+function requireStudent(){if(state.role!=='student'){toast('บัญชีครูใช้ดูข้อมูลเท่านั้น ไม่สามารถบันทึกผลได้',true);return false}return true}
+/* ---------- lab (physics + drawing) ---------- */
+function markLesson(){
+ if(!requireStudent())return;
+ sb.from('learning_progress').upsert({student_id:ST.id,lesson_slug:LESSON_SLUG,completed:true,progress_percent:100,updated_at:new Date().toISOString()},{onConflict:'student_id,lesson_slug'}).then(({error})=>{if(error){toast('บันทึกไม่สำเร็จ: '+error.message,true);return}state.lessonDone=true;refresh();toast('บันทึกสถานะเรียนจบบทเรียนแล้ว')});
+}
+function getData(){
+ let type=$('lensType').value,do_=+$('doRange').value,absf=+$('fRange').value,f=type==='convex'?absf:-absf;
+ let inv=1/f-1/do_,di=Math.abs(inv)<1e-8?Infinity:1/inv,m=di===Infinity?Infinity:-di/do_;
+ let kind=di===Infinity?'ภาพที่ระยะอนันต์':di>0?'ภาพจริง':'ภาพเสมือน';
+ let dir=di===Infinity?'แนวรังสีขนาน':m<0?'หัวกลับ':'หัวตั้ง';
+ let size=di===Infinity?'ไม่สามารถระบุขนาดที่ระยะอนันต์':Math.abs(m)>1.02?'ขยาย':Math.abs(m)<.98?'ย่อ':'เท่าวัตถุ';
+ return {type,do_,f,di,m,kind,dir,size};
+}
+function fmt(v){return !Number.isFinite(v)?'∞':(Math.abs(v)>999?'∞':v.toFixed(1))}
+function renderLab(){
+ let d=getData(),svg=$('raySvg'),W=900,H=480,cx=450,axis=250,scale=3.0,ox=cx-d.do_*scale,oh=75;
+ const vw=Math.max(300,svg.clientWidth||900),k=900/vw,fs=Math.max(13,Math.round(10.5*k));
+ $('doVal').textContent=d.do_+' cm';$('fVal').textContent=Math.abs(d.f)+' cm';$('outDo').textContent=d.do_+' cm';$('outDi').textContent=fmt(d.di)+' cm';$('outF').textContent=(d.f>0?'+':'')+d.f+' cm';$('outM').textContent=fmt(d.m);
+ $('imageNature').textContent=d.di===Infinity?'วัตถุอยู่ที่จุดโฟกัส: รังสีหลังผ่านเลนส์ขนานกัน ภาพอยู่ที่ระยะอนันต์':`${d.kind} · ${d.dir} · ${d.size}กว่าวัตถุ`;
+ let ix=Number.isFinite(d.di)?cx+d.di*scale:null, ih=Number.isFinite(d.m)?-d.m*oh:0;
+ let parts=[];
+ const line=(x1,y1,x2,y2,color,w=2,dash='')=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="${w}" ${dash?`stroke-dasharray="${dash}"`:''}/>`;
+ parts.push(`<defs><marker id="arr" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6" fill="#f59e0b"/></marker></defs>`);
+ parts.push(line(25,axis,875,axis,'#64748b',1.5));
+ parts.push(`<text x="30" y="235" fill="#64748b" font-size="${fs}">แกนหลัก</text>`);
+ if(showFocus){
+  [-2,-1,1,2].forEach(n=>{let x=cx+n*Math.abs(d.f)*scale;parts.push(line(x,axis-9,x,axis+9,'#64748b',1));parts.push(`<text x="${x}" y="${axis+28}" text-anchor="middle" fill="#475569" font-size="${fs}">${Math.abs(n)===1?'F':'2F'}${n<0?'₁':'₂'}</text>`)});
+ }
+ if(d.type==='convex')parts.push(`<path d="M ${cx} 125 Q ${cx-34} 250 ${cx} 375 Q ${cx+34} 250 ${cx} 125Z" fill="#60a5fa55" stroke="#2563eb" stroke-width="3"/>`);
+ else parts.push(`<path d="M ${cx-9} 125 Q ${cx+22} 250 ${cx-9} 375 L ${cx+9} 375 Q ${cx-22} 250 ${cx+9} 125Z" fill="#a78bfa55" stroke="#7c3aed" stroke-width="3"/>`);
+ parts.push(`<text x="${cx}" y="105" text-anchor="middle" fill="#1d4ed8" font-size="${fs}" font-weight="700">${d.type==='convex'?'เลนส์นูน':'เลนส์เว้า'}</text>`);
+ parts.push(line(ox,axis,ox,axis-oh,'#f59e0b',5));parts.push(`<path d="M ${ox-9} ${axis-oh+12} L ${ox} ${axis-oh} L ${ox+9} ${axis-oh+12}" fill="none" stroke="#f59e0b" stroke-width="4"/>`);
+ parts.push(`<text x="${ox}" y="${axis-oh-15}" text-anchor="middle" fill="#b45309" font-size="${fs}" font-weight="700">วัตถุ</text>`);
+ if(Number.isFinite(ix)&&Math.abs(ix)<850&&Math.abs(ih)<210){
+  parts.push(line(ix,axis,ix,axis-ih,'#8b5cf6',5));let tip=axis-ih;
+  parts.push(`<path d="M ${ix-8} ${tip+(ih>0?10:-10)} L ${ix} ${tip} L ${ix+8} ${tip+(ih>0?10:-10)}" fill="none" stroke="#8b5cf6" stroke-width="4"/>`);
+  parts.push(`<text x="${ix}" y="${tip+(ih>0?-14:24)}" text-anchor="middle" fill="#7c3aed" font-size="${fs}" font-weight="700">ภาพ</text>`);
+ } else if(d.di!==Infinity){parts.push(`<text x="450" y="440" text-anchor="middle" fill="#7c3aed" font-size="${fs}">ตำแหน่งภาพอยู่นอกพื้นที่แสดงผล</text>`)}
+ if(showRays){
+  let top=axis-oh, colors=['#eab308','#06b6d4','#22c55e'];
+  parts.push(line(ox,top,cx,top,colors[0],2.6));
+  if(d.type==='convex'){
+   let fx=cx+Math.abs(d.f)*scale;parts.push(line(cx,top,fx,axis,colors[0],2.6));
+   if(ix!==null&&Math.abs(ix)<850)parts.push(line(fx,axis,ix,axis-ih,colors[0],1.7,'5 6'));
+  }else{
+   let fx=cx-Math.abs(d.f)*scale;let endx=850;let endy=top+(endx-cx)*(axis-top)/(Math.abs(d.f)*scale);
+   parts.push(line(cx,top,endx,endy,colors[0],2.6));parts.push(line(cx,top,fx,axis,colors[0],1.7,'6 6'));
+  }
+  parts.push(line(ox,top,cx,axis,colors[1],2.5));
+  if(ix!==null&&Math.abs(ix)<850)parts.push(line(cx,axis,ix,axis-ih,colors[1],2.5));
+  let nearFx=cx-Math.abs(d.f)*scale;
+  let slope=(axis-(top))/(nearFx-ox);
+  let yAt=cx===ox?top:top+slope*(cx-ox);
+  parts.push(line(ox,top,cx,yAt,colors[2],2.5));
+  if(d.type==='convex')parts.push(line(cx,yAt,850,yAt,colors[2],2.5));
+  else parts.push(line(cx,yAt,850,axis+(yAt-axis),colors[2],2.5));
+  if(d.di<0 && ix!==null && Math.abs(ix)<850){parts.push(line(cx,axis,ix,axis-ih,'#8b5cf6',1.5,'6 6'))}
+ }
+ svg.innerHTML=parts.join('');
+ svg.onpointerdown=e=>{let pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;let p=pt.matrixTransform(svg.getScreenCTM().inverse());if(Math.abs(p.x-ox)<Math.max(25,24*k)){dragging=true;svg.setPointerCapture(e.pointerId)}};
+ svg.onpointermove=e=>{if(!dragging)return;let pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;let p=pt.matrixTransform(svg.getScreenCTM().inverse());let val=Math.max(10,Math.min(150,Math.round((cx-p.x)/scale)));$('doRange').value=val;renderLab()};
+ svg.onpointerup=()=>dragging=false;svg.onpointercancel=()=>dragging=false;
+}
+window.addEventListener('resize',()=>{clearTimeout(window._rz);window._rz=setTimeout(renderLab,150)});
+$('lensType').addEventListener('change',renderLab);$('doRange').addEventListener('input',renderLab);$('fRange').addEventListener('input',renderLab);
+$('raysBtn').onclick=()=>{showRays=!showRays;$('raysBtn').textContent=showRays?'ซ่อนแนวรังสี':'แสดงแนวรังสี';renderLab()};
+$('focusBtn').onclick=()=>{showFocus=!showFocus;$('focusBtn').textContent=showFocus?'ซ่อนจุดโฟกัส':'แสดงจุดโฟกัส';renderLab()};
+function bump(n){$('doRange').value=Math.max(10,Math.min(150,+$('doRange').value+n));renderLab()}
+function resetLab(){$('lensType').value='convex';$('doRange').value=60;$('fRange').value=20;showRays=true;showFocus=true;$('raysBtn').textContent='ซ่อนแนวรังสี';$('focusBtn').textContent='ซ่อนจุดโฟกัส';renderLab()}
+/* ---------- trials / activity / quiz ---------- */
+let _busy=false;
+async function saveTrial(){if(_busy)return;_busy=true;try{await _saveTrial()}finally{_busy=false}}
+async function _saveTrial(){
+ if(!requireStudent())return;
+ const d=getData();
+ if(ONLINE){
+  const {error}=await sb.from('experiment_records').insert({student_id:ST.id,lens_type:d.type,object_distance:d.do_,focal_length:d.f,image_distance:Number.isFinite(d.di)?+d.di.toFixed(3):null,magnification:Number.isFinite(d.m)?+d.m.toFixed(4):null,image_type:d.kind,image_orientation:d.dir,image_size:d.size,observation:($('observation').value.trim()||null)});
+  if(error){toast('บันทึกไม่สำเร็จ: '+error.message,true);return}
+ }
+ state.trials.push({...d,at:new Date().toLocaleString('th-TH')});persist();renderTrials();toast('บันทึกผลการทดลองแล้ว');
+}
+function renderTrials(){let body=$('trialTable').querySelector('tbody');body.innerHTML=state.trials.map((t,i)=>`<tr><td>${i+1}</td><td>${t.type==='convex'?'เลนส์นูน':'เลนส์เว้า'}</td><td>${esc(t.do_)}</td><td>${esc(t.f)}</td><td>${fmt(t.di)}</td><td>${fmt(t.m)}</td><td>${esc(t.kind)} ${esc(t.dir)}</td></tr>`).join('')||'<tr><td colspan="7">ยังไม่มีข้อมูลการทดลอง</td></tr>'}
+async function submitActivity(){
+ if(!requireStudent())return;
+ const ob=$('observation').value.trim(),ex=$('explanation').value.trim();
+ if(!ob||!ex){toast('กรุณากรอกข้อสังเกตและคำอธิบาย',true);return}
+ const btn=$('actBtn');btn.disabled=true;
+ if(ONLINE){
+  const {error}=await sb.from('activity_submissions').insert({student_id:ST.id,activity_slug:ACT_SLUG,answers:{observation:ob,explanation:ex}});
+  if(error){btn.disabled=false;toast('ส่งไม่สำเร็จ: '+error.message,true);return}
+  state.activity={done:true};$('activityMsg').textContent='ส่งกิจกรรมเรียบร้อยแล้ว (บันทึกขึ้นระบบ)';
+ }
+ btn.disabled=false;persist();
+}
+const qs=[
+['เลนส์นูนมีลักษณะอย่างไร?',['ตรงกลางหนากว่าขอบ','ตรงกลางบางกว่าขอบ','หนาเท่ากันทุกส่วน','ไม่มีความโค้ง'],0],
+['เลนส์เว้าทำให้แสงขนานหลังผ่านเลนส์เป็นอย่างไร?',['รวมกันที่จุดโฟกัส','แยกออกจากกัน','สะท้อนกลับ','หยุดนิ่ง'],1],
+['สัญลักษณ์ f ของเลนส์นูนตามข้อตกลงเครื่องหมายมีค่าอย่างไร?',['เป็นลบ','เป็นศูนย์','เป็นบวก','ไม่มีเครื่องหมาย'],2],
+['ภาพจริงจากเลนส์นูนโดยทั่วไปมีทิศทางอย่างไร?',['หัวตั้ง','หัวกลับ','เอียง 45 องศา','ไม่มีทิศทาง'],1],
+['เมื่อวัตถุอยู่ระหว่างเลนส์นูนกับ F จะเกิดภาพชนิดใด?',['ภาพจริงหัวกลับ','ภาพเสมือนหัวตั้ง','ภาพจริงหัวตั้ง','ไม่เกิดภาพ'],1],
+['เลนส์เว้าให้ภาพลักษณะใดสำหรับวัตถุจริง?',['ภาพจริงหัวกลับ','ภาพเสมือนหัวตั้งและเล็กลง','ภาพจริงขยาย','ภาพที่อนันต์'],1],
+['สมการเลนส์บางคือข้อใด?',['1/f = 1/do + 1/di','f = do + di','m = do/di','1/f = do × di'],0],
+['กำลังขยาย m = -di/do มีค่าเป็นลบหมายถึงอะไร?',['ภาพหัวตั้ง','ภาพหัวกลับ','ภาพเสมือนเสมอ','ภาพเล็กเสมอ'],1],
+['วัตถุอยู่ที่ 2F ของเลนส์นูน ภาพมีขนาดอย่างไร?',['ใหญ่กว่า','เล็กกว่า','เท่าวัตถุ','ไม่เกิดภาพ'],2],
+['จุดโฟกัสหลักใช้สัญลักษณ์ใด?',['O','F','M','D'],1]
+];
+function renderQuiz(){$('questions').innerHTML=qs.map((q,i)=>`<div class="quizq"><b>${i+1}. ${q[0]}</b>${q[1].map((a,j)=>`<label><input type="radio" name="q${i}" value="${j}"> ${'กขคง'[j]}. ${a}</label>`).join('')}<div id="ex${i}" class="muted"></div></div>`).join('')}
+$('quizForm').onsubmit=async e=>{
+ e.preventDefault();if(!requireStudent())return;
+ let score=0,answers=[];
+ qs.forEach((q,i)=>{let chosen=document.querySelector(`input[name=q${i}]:checked`),ok=chosen&&+chosen.value===q[2];answers.push(chosen?+chosen.value:null);if(ok)score++;$('ex'+i).textContent=`เฉลย: ${'กขคง'[q[2]]}. ${q[1][q[2]]}`;$('ex'+i).style.color=ok?'#15803d':'#b91c1c'});
+ const btn=$('quizBtn');btn.disabled=true;
+ if(ONLINE){
+  const {error}=await sb.from('quiz_results').insert({student_id:ST.id,quiz_slug:QUIZ_SLUG,phase:$('quizPhase').value,score,max_score:qs.length,answers});
+  if(error){btn.disabled=false;toast('บันทึกคะแนนไม่สำเร็จ: '+error.message,true);return}
+ }
+ btn.disabled=false;state.score=score;persist();$('quizResult').textContent=`คะแนน ${score}/10`;
+};
+/* ---------- teacher ---------- */
+const lensTh=t=>t==='convex'?'เลนส์นูน':'เลนส์เว้า';
+function renderTeacher(){
+ const tb=$('teacherTable').querySelector('tbody');
+ $('teacherMode').textContent='ข้อมูลจริงจากห้องที่ท่านดูแล';$('classFilterBox').classList.remove('hidden');$('rosterCard').classList.remove('hidden');
+ const cid=$('classFilter').value;
+ const studs=T.students.filter(s=>!cid||s.classroom_id===cid),ids=new Set(studs.map(s=>s.id));
+ const recs=T.records.filter(r=>ids.has(r.student_id)),qz=T.quizzes.filter(q=>ids.has(q.student_id));
+ const byId=Object.fromEntries(studs.map(s=>[s.id,s]));
+ const latest=(sid,ph)=>qz.find(q=>q.student_id===sid&&q.phase===ph);
+ const sc=q=>q?`${Math.round(q.score)}/${Math.round(q.max_score)}`:'—';
+ $('tUsers').textContent=studs.length;$('tTrials').textContent=recs.length;
+ const done=studs.map(s=>qz.find(q=>q.student_id===s.id)).filter(Boolean);
+ $('tScoreLbl').textContent='คะแนนเฉลี่ย (ครั้งล่าสุดของแต่ละคน)';
+ $('tScore').textContent=done.length?(done.reduce((a,q)=>a+q.score/q.max_score*10,0)/done.length).toFixed(1)+'/10':'—';
+ $('rosterTable').querySelector('tbody').innerHTML=studs.map(s=>`<tr><td>${esc(s.student_code)}</td><td>${esc(s.full_name)}</td><td>${esc(s.grade)}/${esc(s.room)}</td><td>${recs.filter(r=>r.student_id===s.id).length}</td><td>${sc(latest(s.id,'pre'))}</td><td>${sc(latest(s.id,'post'))}</td><td>${sc(latest(s.id,'practice'))}</td></tr>`).join('')||'<tr><td colspan="7">ไม่พบนักเรียนในห้องที่เลือก</td></tr>';
+ tb.innerHTML=recs.slice(0,300).map(r=>{const t=fromRec(r),s=byId[r.student_id];return `<tr><td>${esc(s?s.full_name:'-')}</td><td>${lensTh(t.type)}</td><td>${esc(t.do_)}</td><td>${esc(t.f)}</td><td>${fmt(t.di)}</td><td>${fmt(t.m)}</td><td>${esc(t.at)}</td></tr>`}).join('')||'<tr><td colspan="7">ยังไม่มีข้อมูล</td></tr>';
+}
+$('classFilter').addEventListener('change',renderTeacher);
+/* ---------- CSV ---------- */
+function downloadCSV(rows,name){const csv='\ufeff'+rows.map(r=>r.map(v=>{let s=String(v);if(/^[=+\-@\t\r]/.test(s))s="'"+s;return '"'+s.replaceAll('"','""')+'"'}).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download=name;a.click();URL.revokeObjectURL(a.href)}
+function exportMine(){downloadCSV([['ครั้งที่','ชนิดเลนส์','do (cm)','f (cm)','di (cm)','m','ประเภทภาพ','เวลา'],...state.trials.map((t,i)=>[i+1,t.type,t.do_,t.f,fmt(t.di),fmt(t.m),t.kind,t.at])],'lens-lab-trials.csv')}
+function exportTeacher(){
+ const cid=$('classFilter').value,byId=Object.fromEntries(T.students.map(s=>[s.id,s]));
+ const rows=T.records.filter(r=>{const s=byId[r.student_id];return s&&(!cid||s.classroom_id===cid)}).map(r=>{const t=fromRec(r),s=byId[r.student_id];return [s.student_code,s.full_name,s.grade+'/'+s.room,t.type,t.do_,t.f,fmt(t.di),fmt(t.m),t.kind,t.dir,t.size,r.observation||'',t.at]});
+ downloadCSV([['รหัส','ชื่อ-สกุล','ห้อง','ชนิดเลนส์','do (cm)','f (cm)','di (cm)','m','ประเภทภาพ','ทิศทาง','ขนาด','ข้อสังเกต','เวลา'],...rows],'lens-lab-class-records.csv');
+}
+/* ---------- boot ---------- */
+function showSetupError(){
+ const m=!window.supabase?'โหลดไลบรารีฐานข้อมูลไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ตแล้วรีเฟรชหน้า':'ยังไม่ได้ตั้งค่าการเชื่อมต่อฐานข้อมูล (ไม่พบ config.js หรือค่าไม่ถูกต้อง) กรุณาติดต่อผู้ดูแลระบบ';
+ $('setupMsg').textContent=m;$('loginSetup').classList.remove('hidden');$('userLabel').textContent='';$('userBtn').classList.add('hidden');openLogin();
+}
+async function boot(){
+ renderLab();renderQuiz();
+ if(ONLINE){
+  $('loginOnline').classList.remove('hidden');$('phaseBox').classList.remove('hidden');
+  $('trialsWhere').textContent='บันทึกในฐานข้อมูลออนไลน์';
+  $('progressNote').textContent='ข้อมูลของท่านถูกบันทึกในฐานข้อมูลออนไลน์ และครูผู้สอนของห้องท่านสามารถดูได้';
+  $('pwBtn').onclick=()=>{$('pwForm').reset();$('pwErr').classList.add('hidden');$('pw').style.display='grid'};
+  $('pwForm').onsubmit=async e=>{
+   e.preventDefault();const a=$('pw1').value,b=$('pw2').value,er=$('pwErr');er.classList.add('hidden');
+   if(a.length<8||a!==b){er.textContent=a.length<8?'รหัสผ่านต้องยาวอย่างน้อย 8 ตัวอักษร':'รหัสผ่านทั้งสองช่องไม่ตรงกัน';er.classList.remove('hidden');return}
+   $('pwSave').disabled=true;const {error}=await sb.auth.updateUser({password:a});$('pwSave').disabled=false;
+   if(error){er.textContent='เปลี่ยนรหัสผ่านไม่สำเร็จ: '+error.message;er.classList.remove('hidden');return}
+   $('pw').style.display='none';toast('เปลี่ยนรหัสผ่านเรียบร้อยแล้ว');
+  };
+  $('userBtn').textContent='เข้าสู่ระบบ';
+  $('userBtn').onclick=async()=>{const {data}=await sb.auth.getSession();if(data.session){await sb.auth.signOut()}else openLogin()};
+  $('authForm').onsubmit=async e=>{
+   e.preventDefault();$('authErr').classList.add('hidden');$('authBtn').disabled=true;$('authBtn').textContent='กำลังเข้าสู่ระบบ...';
+   const {data,error}=await sb.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});
+   $('authBtn').disabled=false;$('authBtn').textContent='เข้าสู่ระบบ';
+   if(error){showAuthErr('อีเมลหรือรหัสผ่านไม่ถูกต้อง');return}
+   $('password').value='';await enterApp(data.session);
+  };
+  sb.auth.onAuthStateChange((ev)=>{if(ev==='SIGNED_OUT'){state={trials:[],score:null,lessonDone:false,activity:null,name:'',role:'student'};ST=null;T={classrooms:[],students:[],records:[],quizzes:[]};$('pwBtn').classList.add('hidden');$('rosterTable').querySelector('tbody').innerHTML='';$('teacherTable').querySelector('tbody').innerHTML='';$('observation').value='';$('explanation').value='';$('activityMsg').textContent='';$('quizResult').textContent='';renderQuiz();applyRole();refresh();renderTrials();$('userBtn').textContent='เข้าสู่ระบบ';$('userLabel').textContent='ยังไม่ได้เข้าสู่ระบบ';openLogin()}});
+  state={trials:[],score:null,lessonDone:false,activity:null,name:'',role:'student'};applyRole();refresh();renderTrials();$('userLabel').textContent='ยังไม่ได้เข้าสู่ระบบ';
+  const {data:{session}}=await sb.auth.getSession();
+  if(session)await enterApp(session);else openLogin();
+ }else{showSetupError()}
+}
+boot();
+</script>
+</body></html>
